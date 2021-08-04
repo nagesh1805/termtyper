@@ -82,6 +82,9 @@ def print_input_text(stdscr,ip_text,time_left): # prints the text that is being 
         stdscr.addstr(curses.LINES-1,1,msg,curses.color_pair(DEFAULT))
         for opt in ["F5","F2","F3","Esc"]:
             stdscr.chgat(curses.LINES-1,msg.index(opt)+1,len(opt),curses.A_BOLD|curses.color_pair(BLUE))
+    else:
+        stdscr.addstr(curses.LINES-1,1,"Terminal window size should be at least 120x48",curses.color_pair(YELLOW))
+
 
 
 def print_text(stdscr,text_list,color_dict,l=0): # prints three lines of text to be typed
