@@ -8,6 +8,10 @@
 ### Usage
 Just type `termtyper` on terminal 
 
+### Versiom
+> 1.1.0
+> pause/resume the typing test feature has been added in this version.
+
 ### Languages
 
 The following languages are available

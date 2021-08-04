@@ -1,8 +1,17 @@
 from setuptools import setup
 from pathlib import Path
+from termtyper.term_typer import VERSION_NUMBER
+import platform
+
+def installRequires():
+    if platform.system() == 'Windows':
+        return ['windows-curses']
+    else:
+        return []
+
 setup(
     name="termtyper",
-    version="1.0.0",
+    version=VERSION_NUMBER,
     description="A Terminal based typing practice application",
     long_description=Path("README.md").read_text(),
     long_description_content_type="text/markdown",
@@ -11,6 +20,7 @@ setup(
     author="Naegsh Talagani",
     author_email="nageshmath@gmail.com",
     packages=["termtyper"],
+    install_requires= installRequires(),
     package_data = {
         "termtyper":["data/words.json","config.json"]
     },

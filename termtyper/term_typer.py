@@ -1,11 +1,13 @@
 #!/usr/bin/env python
 
 import curses
+import curses.ascii
 from curses import textpad
 import time
 import json
 import random
 import platform
+import sys
 from pathlib import Path
 
 
@@ -15,7 +17,9 @@ DEFAULT,GREEN,RED,YELLOW,MAGENTA,CYAN,BLUE,WHITE=tuple(range(1,9))
 MAX_WORDS_PER_SECOND = 5
 KEYBOARD_WIDTH = 116
 KEYBOARD_HEIGHT = 16
-KEYBOARD_Y_OFFSET = 12
+KEYBOARD_Y_OFFSET = 11
+PAUSED_MSG_Y_OFFSET = 9
+
 
 mac_key_board=[
 "~.` !.1 @.2 #.3 $.4 %.5 ^.6 &.7 *.8 (.9 ).0 _.- +.= ;.::::delete ;.home:",
@@ -37,12 +41,12 @@ other_key_board=[
 
 key_Board=[
     [(ord("~"),ord("`")),(ord("!"),ord("1")), (ord("@"),ord("2")), (ord("#"),ord("3")), (ord("$"),ord("4")),(ord("%"),ord("5")), (ord("^"),ord("6")), (ord("&"),ord("7")), (ord("*"),ord("8")), (ord("("),ord("9")), (ord(")"),ord("0")), (ord("_"),ord("-")),(ord("+"),ord("=")), 
-    (curses.ascii.DEL,curses.KEY_BACKSPACE),(curses.KEY_HOME,)],
+    (curses.ascii.DEL,curses.KEY_BACKSPACE,curses.ascii.BS),(curses.KEY_HOME,)],
     [(curses.ascii.TAB,9),(ord("Q"),ord("q")), (ord("W"),ord("w")),(ord("E"),ord("e")),(ord("R"),ord("r")),(ord("T"),ord("t")),(ord("Y"),ord("y")),(ord("U"),ord("u")),(ord("I"),ord("i")),(ord("O"),ord("o")),(ord("P"),ord("p")),(ord("{"),ord("[")),(ord("}"),ord("]")),(ord("|"),ord("\\")),
     (curses.KEY_END,)],
     [("Caps Lock",), (ord("A"),ord("a")),(ord("S"),ord("s")),(ord("D"),ord("d")),(ord("F"),ord("f")),(ord("G"),ord("g")),(ord("H"),ord("h")),(ord("J"),ord("j")),(ord("K"),ord("k")), (ord("L"),ord("l")),(ord(":"),ord(";")), (ord("\""),ord("'")), (curses.KEY_ENTER,10,13),(curses.KEY_PPAGE,)],
     [("Shift",),(ord("Z"),ord("z")), (ord("X"),ord("x")), (ord("C"),ord("c")), (ord("V"),ord("v")),(ord("B"),ord("b")), (ord("N"),ord("n")), (ord("M"),ord("m")), (ord("<"),ord(",")), (ord(">"),ord(".")), (ord("?"),ord("/")), ("Shift",),(curses.KEY_UP,),(curses.KEY_NPAGE,)],
-    [("Ctrl",),("Alt","Win"),("Command","Alt"),(curses.ascii.SP,32),("Command","Alt"),("Alt","Win"),(curses.KEY_LEFT,),(curses.KEY_DOWN,),(curses.KEY_RIGHT,)]
+    [("Ctrl",),("Alt","Win"),("Command","Alt",curses.KEY_COMMAND),(curses.ascii.SP,32),("Command","Alt"),("Alt","Win"),(curses.KEY_LEFT,),(curses.KEY_DOWN,),(curses.KEY_RIGHT,)]
 ]
 
 osname = platform.system()
@@ -77,13 +81,13 @@ def print_input_text(stdscr,ip_text,time_left): # prints the text that is being 
     stdscr.chgat(1,dw+6,1,curses.color_pair(DEFAULT)|curses.A_BOLD)
     stdscr.chgat(1,dw+7,2,curses.color_pair(YELLOW)|curses.A_BOLD)
 
-    msg = "Press F5 to Refresh; F2 to customize the test; F3 to toggle onscreen keyboard; and Esc to quit; "
+    msg = "Press F2 to customize test; F3 to toggle onscreen keyboard; F4 to pause/resume; F5 to Refresh; and Esc to quit;"
     if  len(msg) < sw-2:
         stdscr.addstr(curses.LINES-1,1,msg,curses.color_pair(DEFAULT))
-        for opt in ["F5","F2","F3","Esc"]:
+        for opt in ["F2","F3","F4","F5","Esc"]:
             stdscr.chgat(curses.LINES-1,msg.index(opt)+1,len(opt),curses.A_BOLD|curses.color_pair(BLUE))
     else:
-        stdscr.addstr(curses.LINES-1,1,"Terminal window size should be at least 120x48",curses.color_pair(YELLOW))
+        stdscr.addstr(curses.LINES-1,1,"Terminal window size should be at least 120x36",curses.color_pair(YELLOW))
 
 
 
@@ -179,7 +183,7 @@ def termtyper(stdscr,language,words):
     random_text = random.choices(text.split(' '),k=number_of_words)
     textlist = split_text(random_text,sw-3*dw)
     on_screen_kbd = True
-    kbd_click_sounds = False
+    pause_typing = False
     cum_line_lengths[-1]=0
     for i,tex in enumerate(textlist):
         cum_line_lengths[i]=cum_line_lengths[i-1]+len(textlist[i])
@@ -198,10 +202,12 @@ def termtyper(stdscr,language,words):
 
     print_text(stdscr,textlist,color_dict,l=0)
     print_input_text(stdscr, ip_text,time_left)
+    mssg = "Paused. Press F4 to resume to typing"
     if on_screen_kbd and can_dispay_keyboard(stdscr):
         keyboard(stdscr,KEYBOARD_Y_OFFSET,(sw-KEYBOARD_WIDTH)//2,key_map)
 
     start_time= time.time()
+    now = start_time
     started = False
     word_got_wrong = False
     result = {
@@ -232,6 +238,7 @@ def termtyper(stdscr,language,words):
             started = False
             time_left=max_time
             start_time = time.time()
+            now = start_time
             random_text = random.choices(text.split(' '),k=number_of_words)
             textlist = split_text(random_text,sw-3*dw)
             cum_line_lengths = {}
@@ -293,10 +300,18 @@ def termtyper(stdscr,language,words):
 
         if not started and key != curses.ERR and key != curses.KEY_MOUSE and key != curses.KEY_RESIZE:
             start_time= time.time()
+            now = start_time
             started = True
 
         if pkey != None and  started and on_screen_kbd and can_dispay_keyboard(stdscr):
             typed_effect(stdscr,key_map,pkey)
+
+        if pause_typing:
+            stdscr.addstr(PAUSED_MSG_Y_OFFSET,sw//2-len(mssg)//2,mssg,curses.color_pair(DEFAULT))
+            stdscr.chgat(PAUSED_MSG_Y_OFFSET,sw//2-len(mssg)//2+ mssg.index('Paused'),len('Paused.'),curses.color_pair(RED)|curses.A_BOLD)
+            stdscr.chgat(PAUSED_MSG_Y_OFFSET,sw//2-len(mssg)//2+ mssg.index('F4'),len('F4'),curses.color_pair(BLUE)|curses.A_BOLD)
+        else:
+            stdscr.addstr(PAUSED_MSG_Y_OFFSET,sw//2-len(mssg)//2,len(mssg)*" ") 
         stdscr.refresh()
 
 
@@ -360,8 +375,7 @@ def termtyper(stdscr,language,words):
             break
 
 
-
-        elif key == ord(textlist[l][i]) and key != curses.ascii.SP :
+        elif key == ord(textlist[l][i]) and key != curses.ascii.SP and not pause_typing:
             if not word_got_wrong:
                 color_dict[(l,i)]=curses.color_pair(GREEN) 
                 abs_color_dict[cum_line_lengths[l-1]+i] = color_dict[(l,i)]
@@ -391,7 +405,7 @@ def termtyper(stdscr,language,words):
 
 
 
-        elif key in [curses.ascii.SP,32]:    # key is space
+        elif key in [curses.ascii.SP,ord(' ')] and not pause_typing:    # key is space
             if j == 0:
                 a = 0
             else:
@@ -419,7 +433,7 @@ def termtyper(stdscr,language,words):
 
 
 
-        elif key in [curses.ascii.DEL,curses.KEY_BACKSPACE]:    # key delete or back space ,
+        elif key in [curses.ascii.DEL,curses.KEY_BACKSPACE,curses.ascii.BS] and  not pause_typing:    # key delete or back space ,
             if on_screen_kbd and can_dispay_keyboard(stdscr):
                 typed_effect(stdscr,key_map,key,MAGENTA)
 
@@ -461,11 +475,14 @@ def termtyper(stdscr,language,words):
             }
             refresh = True
             started = False
+            pause_typing = False
+
             pkey = None
             max_time=language["max_time"]
             time_left = max_time
             number_of_words = max_time*MAX_WORDS_PER_SECOND
             start_time = time.time()
+            now = start_time
             text = words[language["lang"]][language["cat"]]
             random_text = random.choices(text.split(' '),k=number_of_words)
             textlist = split_text(random_text,sw-3*dw)
@@ -492,10 +509,18 @@ def termtyper(stdscr,language,words):
             on_screen_kbd = not on_screen_kbd
 
         elif key == curses.KEY_F4:
-            kbd_click_sounds = not kbd_click_sounds
 
+            mssg = "Paused. Press F4 to resume to typing"
+            if not pause_typing:
+                stdscr.addstr(PAUSED_MSG_Y_OFFSET,sw//2-len(mssg)//2,mssg,curses.color_pair(DEFAULT))
+                stdscr.chgat(PAUSED_MSG_Y_OFFSET,sw//2-len(mssg)//2+ mssg.index('Paused'),len('Paused.'),curses.color_pair(RED)|curses.A_BOLD)
+                stdscr.chgat(PAUSED_MSG_Y_OFFSET,sw//2-len(mssg)//2+ mssg.index('F4'),len('F4'),curses.color_pair(BLUE)|curses.A_BOLD)
+            else:
+                stdscr.addstr(PAUSED_MSG_Y_OFFSET,sw//2-len(mssg)//2,len(mssg)*" ") 
 
-        elif key == curses.KEY_LEFT:   # key <-
+            pause_typing = not pause_typing
+
+        elif key == curses.KEY_LEFT and not pause_typing:   # key <-
 
             if on_screen_kbd and can_dispay_keyboard(stdscr):
                 typed_effect(stdscr,key_map,key,YELLOW)
@@ -504,7 +529,7 @@ def termtyper(stdscr,language,words):
                 ip_text_ix -= 1
                 i -= 1
 
-        elif key == curses.KEY_RIGHT: # key ->
+        elif key == curses.KEY_RIGHT and not pause_typing: # key ->
 
             if on_screen_kbd and can_dispay_keyboard(stdscr):
                 typed_effect(stdscr,key_map,key,YELLOW)
@@ -512,12 +537,12 @@ def termtyper(stdscr,language,words):
                 ip_text_ix += 1
                 i += 1
         elif key in [curses.KEY_UP,curses.KEY_DOWN,curses.KEY_HOME,curses.KEY_PPAGE,
-                curses.KEY_NPAGE,curses.KEY_END,10,13,curses.KEY_ENTER,curses.KEY_DC,curses.KEY_IC]:
+                curses.KEY_NPAGE,curses.KEY_END,10,13,curses.KEY_ENTER,curses.KEY_DC,curses.KEY_IC,curses.ascii.TAB]:
                 if on_screen_kbd and can_dispay_keyboard(stdscr):
                     typed_effect(stdscr,key_map,key,YELLOW)
 
 
-        elif ord(' ') <= key <= ord('~'):
+        elif ord(' ') <= key <= ord('~') and not pause_typing:
             ip_text = ip_text[:ip_text_ix] + chr(key)+ip_text[ip_text_ix:]
             ip_text_ix += 1
 
@@ -543,9 +568,23 @@ def termtyper(stdscr,language,words):
         stdscr.addstr(dw+6,dw+1+1,iip_text,curses.color_pair(SIX))
         stdscr.chgat(dw+6,dw+1+ip_text_ix+1,1,curses.A_BLINK|curses.color_pair(SIX))
 
+    
+        if started and not pause_typing:
+            time_left -= (time.time()-now)
+            now = time.time()
+        elif started and pause_typing:
+            now = time.time()
+
+        if  key in list(range(ord(' '),ord('~')+1))+[curses.KEY_BACKSPACE,curses.ascii.DEL,curses.KEY_LEFT,curses.KEY_RIGHT,curses.KEY_UP,curses.KEY_DOWN,curses.KEY_HOME,curses.KEY_PPAGE,
+                curses.KEY_NPAGE,curses.KEY_END,10,13,curses.KEY_ENTER,curses.KEY_DC,curses.KEY_IC,curses.ascii.TAB]:
+            if not pause_typing:
+                pkey = key
+            else:
+                pkey = ord(' ')
 
         time_left_s = int(time_left)
         time_left_ms = int((time_left - time_left_s)*100)
+
 
         stdscr.addstr(1,dw+1,f"{(time_left_s//60)//10}{(time_left_s//60)%10}:{(time_left_s%60)//10}{(time_left_s%60)%10}:{time_left_ms//10}{time_left_ms%10}",curses.A_BOLD)
         stdscr.chgat(1,dw+1,2,curses.color_pair(BLUE)|curses.A_BOLD)
@@ -553,12 +592,6 @@ def termtyper(stdscr,language,words):
         stdscr.chgat(1,dw+4,2,curses.color_pair(MAGENTA)|curses.A_BOLD)
         stdscr.chgat(1,dw+6,1,curses.color_pair(DEFAULT)|curses.A_BOLD)
         stdscr.chgat(1,dw+7,2,curses.color_pair(YELLOW)|curses.A_BOLD) 
-    
-        if started:
-            time_left = max_time - (time.time()-start_time)
-        if  key in list(range(ord(' '),ord('~')+1))+[curses.KEY_BACKSPACE,curses.ascii.DEL,curses.KEY_LEFT,curses.KEY_RIGHT,curses.KEY_UP,curses.KEY_DOWN,curses.KEY_HOME,curses.KEY_PPAGE,
-                curses.KEY_NPAGE,curses.KEY_END,10,13,curses.KEY_ENTER,curses.KEY_DC,curses.KEY_IC]:
-            pkey = key
         stdscr.refresh()
 
 
@@ -681,7 +714,7 @@ def lang_option(stdscr,language):
                 stdscr.addstr(y+2*iccx,dw_+x,cat+" ✔︎",curses.color_pair(CYAN))
             else:
                 stdscr.addstr(y+2*iccx,dw_+x,cat,curses.color_pair(CYAN))    
-        stdscr.addstr(curses.LINES-1,1,"Press ESC to go back",curses.color_pair(DEFAULT))
+        stdscr.addstr(curses.LINES-1,1,"Press Esc to go back",curses.color_pair(DEFAULT))
         stdscr.chgat(curses.LINES-1,7,3,curses.A_BOLD|curses.color_pair(BLUE))
         stdscr.refresh()
       
@@ -861,9 +894,21 @@ def termtyper_main(stdscr):
     language_data_to_dump = json.dumps(language)
     Path(__file__).parent.joinpath("config.json").write_text(language_data_to_dump)
 
+
+VERSION_NUMBER = '1.1.0'
+
 def run():
     curses.wrapper(termtyper_main)
 
 
 if __name__ == '__main__':
-    run()
+    if len(sys.argv)==1:
+        run()
+    elif len(sys.argv) == 2 and sys.argv[1] in ['--help','--h']:
+        print("Usage: termtyper")
+        print(5*"-")
+        print("Just type the command 'termtyper' on the terminal to start the application.")
+    elif len(sys.argv) == 2  and sys.argv[1] in ['--version','--V']:
+        print(f"termtyper {VERSION_NUMBER}")
+    else:
+        print("Inavlid arguments")
