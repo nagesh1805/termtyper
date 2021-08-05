@@ -8,7 +8,10 @@ import json
 import random
 import platform
 import sys
+import urllib.request
+import os
 from pathlib import Path
+import argparse
 
 
 dw=2
@@ -895,20 +898,43 @@ def termtyper_main(stdscr):
     Path(__file__).parent.joinpath("config.json").write_text(language_data_to_dump)
 
 
-VERSION_NUMBER = '1.1.0'
+VERSION_NUMBER = '1.1.1'
+
+def latest_version(pkg_name='termtyper'):
+    url = f"https://pypi.org/pypi/{pkg_name}/json"
+    data = json.load(urllib.request.urlopen(url))
+    versions = sorted(list(data["releases"].keys()))
+    return versions[-1]
 
 def run():
-    curses.wrapper(termtyper_main)
+    parser = argparse.ArgumentParser(
+        prog='termtyper',
+        description='A terminal based typing practice application.'
+    )
+    group = parser.add_mutually_exclusive_group()
+    group.add_argument('--version',default=False,action="store_true",help='Show program version')
+    group.add_argument('--upgrade',default=False,action="store_true",help='Upgrade to latest version')
+    args = parser.parse_args()
+
+    if args.version:
+        print(f"termtyper {VERSION_NUMBER}")
+    elif args.upgrade:
+        try:
+            latestVersion = latest_version()
+            if latestVersion != VERSION_NUMBER :
+                os.system("pip uninstall termtyper -y")
+                print(10*"-")
+                os.system("pip install termtyper")
+            elif latestVersion == VERSION_NUMBER:
+                print("termtyper is up to date.")
+        except:
+            print("Could not get the latest version information.")
+    else:
+        curses.wrapper(termtyper_main)
+
+
+
 
 
 if __name__ == '__main__':
-    if len(sys.argv)==1:
-        run()
-    elif len(sys.argv) == 2 and sys.argv[1] in ['--help','--h']:
-        print("Usage: termtyper")
-        print(5*"-")
-        print("Just type the command 'termtyper' on the terminal to start the application.")
-    elif len(sys.argv) == 2  and sys.argv[1] in ['--version','--V']:
-        print(f"termtyper {VERSION_NUMBER}")
-    else:
-        print("Inavlid arguments")
+    run()

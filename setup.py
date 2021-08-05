@@ -3,11 +3,11 @@ from pathlib import Path
 from termtyper.term_typer import VERSION_NUMBER
 import platform
 
+
 def installRequires():
     if platform.system() == 'Windows':
         return ['windows-curses']
-    else:
-        return []
+    return []
 
 setup(
     name="termtyper",

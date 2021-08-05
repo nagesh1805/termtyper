@@ -5,11 +5,15 @@
 ### Installation
 > `pip install termtyper`
 
-### Usage
-Just type `termtyper` on terminal 
+### Usage of command
+Just type `termtyper` on terminal to start application
 
-### Versiom
-> 1.1.0
+usage: termtyper [-h] [--version | --upgrade]
+
+### Versions
+#### 1.1.1
+> added coomand line argument feature to upgrade (if latest version available) and for getting version information
+#### 1.1.0
 > pause/resume the typing test feature has been added in this version.
 
 ### Languages
