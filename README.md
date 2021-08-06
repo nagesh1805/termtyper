@@ -1,14 +1,12 @@
 # termtyper
 
-### `termtyper` is a terminal based typing practice command-line application written in Python3 using curses library
+### `termtyper` is a terminal based typing practice command-line application written in Python3 using curses library. It can run on mac/lunux/unix and also windows
 
 ### Installation
 > `pip install termtyper`
 
-**Note:** windows users may need to install `windows-curses`  package (`pip install windows-curses`).\
- And works fine with windows terminal except resize terminal.\
+**Note:** On windows it works with windows terminal but one issue is it crashes when we resize the terminal.\
 (windows terminal can be installed from microsoft store).
-
 
 
 ### Usage of command
@@ -25,16 +23,18 @@ usage: termtyper [-h] [--version] [--upgrade]
 
 ### Versions
 
+#### 1.1.4
+> Bug fix: install_requires keyword in setup.py(now windows-curses package will be autometically installed as required package for windows system)
 #### 1.1.3
 > No major changes, small adjustment in command-line arguments, and updated README file  
 #### 1.1.2
-> no changes (just fixed typo in my name in the setup file )
+> No changes (just fixed typo in my name in the setup file )
 #### 1.1.1
-> added coomand line argument feature to upgrade (if latest version available) and for getting version information
+> Added command line argument feature to upgrade (if latest version available) and for getting version information
 ##### 1.1.0
-> pause/resume the typing test feature has been added in this version.
+> Pause/resume the typing test feature has been added in this version.
 #### 1.0.1
-> added help message to display when terminal is too small to fit onscreen keyboard
+> Added help message to display when terminal is too small to fit onscreen keyboard
 ##### 1.0.0
 > First version
 

@@ -208,6 +208,7 @@ def termtyper(stdscr,language,words):
     if on_screen_kbd and can_dispay_keyboard(stdscr):
         keyboard(stdscr,KEYBOARD_Y_OFFSET,(sw-KEYBOARD_WIDTH)//2,key_map)
 
+
     start_time= time.time()
     now = start_time
     started = False
@@ -224,10 +225,10 @@ def termtyper(stdscr,language,words):
 
 
     while True:
+        
         if time_left <=0:
 
             print_result(stdscr,result,unit_time,language)
-
 
             result = {
                 "wrong_key_strokes" : 0,
@@ -566,7 +567,8 @@ def termtyper(stdscr,language,words):
             sp_ix += len(space_locations[cx])
         sp_ix += j
         iip_text=ip_text[:ip_text_ix]+'|'+ip_text[ip_text_ix:]
-        stdscr.addstr(dw+6,dw+1+1,sw//2*' ',curses.color_pair(DEFAULT))
+        stdscr.move(dw+6,dw+1+1)
+        stdscr.clrtoeol()
         stdscr.addstr(dw+6,dw+1+1,iip_text,curses.color_pair(SIX))
         stdscr.chgat(dw+6,dw+1+ip_text_ix+1,1,curses.A_BLINK|curses.color_pair(SIX))
 
@@ -870,6 +872,14 @@ def keyboard(stdscr,kbd_y_offset,kbd_x_offset,key_map):
 
 # Main
 
+VERSION_NUMBER = '1.1.4'
+
+def latest_version(pkg_name='termtyper'):
+    url = f"https://pypi.org/pypi/{pkg_name}/json"
+    data = json.load(urllib.request.urlopen(url))
+    versions = sorted(list(data["releases"].keys()))
+    return versions[-1]
+
 def termtyper_main(stdscr):
     curses.curs_set(False)
     curses.mousemask(True)
@@ -884,26 +894,19 @@ def termtyper_main(stdscr):
     curses.init_pair(6,curses.COLOR_CYAN,-1)
     curses.init_pair(7,curses.COLOR_BLUE,-1)
     curses.init_pair(8,curses.COLOR_WHITE,curses.COLOR_BLACK)
-    
+
     words_data = Path(__file__).parent.joinpath("data").joinpath("words.json").read_text()
     words = json.loads(words_data)
 
     language_data = Path(__file__).parent.joinpath("config.json").read_text()
     language = json.loads(language_data)
 
+
     termtyper(stdscr,language,words)
 
     language_data_to_dump = json.dumps(language)
     Path(__file__).parent.joinpath("config.json").write_text(language_data_to_dump)
 
-
-VERSION_NUMBER = '1.1.3'
-
-def latest_version(pkg_name='termtyper'):
-    url = f"https://pypi.org/pypi/{pkg_name}/json"
-    data = json.load(urllib.request.urlopen(url))
-    versions = sorted(list(data["releases"].keys()))
-    return versions[-1]
 
 def run():
     parser = argparse.ArgumentParser(
@@ -913,7 +916,6 @@ def run():
     parser.add_argument('--version',default=False,action="store_true",help='Show program version')
     parser.add_argument('--upgrade',default=False,action="store_true",help='Upgrade to latest version')
     args = parser.parse_args()
-
     if args.version or args.upgrade:
         if args.version:
             print(f"termtyper {VERSION_NUMBER}")

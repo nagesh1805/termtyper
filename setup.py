@@ -3,12 +3,6 @@ from pathlib import Path
 from termtyper.term_typer import VERSION_NUMBER
 import platform
 
-
-def installRequires():
-    if platform.system() == 'Windows':
-        return ['windows-curses']
-    return []
-
 setup(
     name="termtyper",
     version=VERSION_NUMBER,
@@ -20,7 +14,7 @@ setup(
     author="Nagesh Talagani",
     author_email="nageshmath@gmail.com",
     packages=["termtyper"],
-    install_requires= installRequires(),
+    install_requires= ['windows-curses;platform_system=="Windows"'],
     package_data = {
         "termtyper":["data/words.json","config.json"]
     },
