@@ -23,7 +23,6 @@ KEYBOARD_HEIGHT = 16
 KEYBOARD_Y_OFFSET = 11
 PAUSED_MSG_Y_OFFSET = 9
 
-
 mac_key_board=[
 "~.` !.1 @.2 #.3 $.4 %.5 ^.6 &.7 *.8 (.9 ).0 _.- +.= ;.::::delete ;.home:",
 "⇤.⇥::tab:::: ;.Q ;.W ;.E ;.R ;.T ;.Y ;.U ;.I ;.O ;.P {.[ }.] |.\\ ;.:end:",   
@@ -752,7 +751,7 @@ def print_options(stdscr,selected_row_ix,challenges_types,language):
 
 
 def option_display(stdscr,language):
-    # curses.curs_set(0)
+
     ONE_MINUTE = 60
     TWO_MINUTE = 120
     THREE_MINUTE = 180
@@ -898,7 +897,7 @@ def termtyper_main(stdscr):
     Path(__file__).parent.joinpath("config.json").write_text(language_data_to_dump)
 
 
-VERSION_NUMBER = '1.1.1'
+VERSION_NUMBER = '1.1.3'
 
 def latest_version(pkg_name='termtyper'):
     url = f"https://pypi.org/pypi/{pkg_name}/json"
@@ -911,29 +910,26 @@ def run():
         prog='termtyper',
         description='A terminal based typing practice application.'
     )
-    group = parser.add_mutually_exclusive_group()
-    group.add_argument('--version',default=False,action="store_true",help='Show program version')
-    group.add_argument('--upgrade',default=False,action="store_true",help='Upgrade to latest version')
+    parser.add_argument('--version',default=False,action="store_true",help='Show program version')
+    parser.add_argument('--upgrade',default=False,action="store_true",help='Upgrade to latest version')
     args = parser.parse_args()
 
-    if args.version:
-        print(f"termtyper {VERSION_NUMBER}")
-    elif args.upgrade:
-        try:
-            latestVersion = latest_version()
-            if latestVersion != VERSION_NUMBER :
-                os.system("pip uninstall termtyper -y")
-                print(10*"-")
-                os.system("pip install termtyper")
-            elif latestVersion == VERSION_NUMBER:
-                print("termtyper is up to date.")
-        except:
-            print("Could not get the latest version information.")
+    if args.version or args.upgrade:
+        if args.version:
+            print(f"termtyper {VERSION_NUMBER}")
+        if args.upgrade:
+            try:
+                latestVersion = latest_version()
+                if latestVersion != VERSION_NUMBER :
+                    os.system("pip uninstall termtyper -y")
+                    print(10*"-")
+                    os.system("pip install termtyper")
+                elif latestVersion == VERSION_NUMBER:
+                    print("termtyper is up to date.")
+            except:
+                print("Could not get the latest version information.")
     else:
         curses.wrapper(termtyper_main)
-
-
-
 
 
 if __name__ == '__main__':

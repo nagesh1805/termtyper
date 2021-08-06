@@ -17,7 +17,7 @@ setup(
     long_description_content_type="text/markdown",
     url="https://github.com/nagesh1805/termtyper.git",
 
-    author="Naegsh Talagani",
+    author="Nagesh Talagani",
     author_email="nageshmath@gmail.com",
     packages=["termtyper"],
     install_requires= installRequires(),
