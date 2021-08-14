@@ -1,7 +1,6 @@
 from setuptools import setup
 from pathlib import Path
 from termtyper.term_typer import VERSION_NUMBER
-import platform
 
 setup(
     name="termtyper",
@@ -16,7 +15,7 @@ setup(
     packages=["termtyper"],
     install_requires= ['windows-curses;platform_system=="Windows"'],
     package_data = {
-        "termtyper":["data/words.json","config.json"]
+        "termtyper":["data/*.txt","config.json","wpm_statistics.json","update.json"]
     },
     entry_points={
         "console_scripts": [

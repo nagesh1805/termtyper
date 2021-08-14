@@ -1,12 +1,13 @@
 # termtyper
 
-### `termtyper` is a terminal based typing practice command-line application written in Python3 using curses library. It can run on mac/lunux/unix and also windows
+### `termtyper` is a terminal based typing practice command-line application written in Python3 using curses library. It can run on mac/linux/unix and also windows.
 
 ### Installation
 > `pip install termtyper`
 
-**Note:** On windows it works with windows terminal but one issue is it crashes when we resize the terminal.\
-(windows terminal can be installed from microsoft store).
+**Note:** 
+1. Please install latest python3 www.python.org (with pip), though python come with your system. There are some issues (like permission errors) with python that comes with system by default (as it is insatlled system level not user level). DO NOT UNININSTALL the python the came with your system by default. Just install one latest python at user level.
+2. On windows termtyper works with windows-terminal but one issue is, it crashes when we resize the terminal. So try not to resize the terminal after application got started (windows-terminal can be installed from microsoft store).
 
 
 ### Usage of command
@@ -16,25 +17,25 @@ usage: termtyper [-h] [--version] [--upgrade]
 
 ### Features
 - Onscreen keyboard to see typing effect and has option to toggle onscreen keyboard.
-- Can be customized the typing test challenge with 1 minute, 2 minute, 3 minute, 5 minute and 10 minute.
-- Can be customized the typing test language with English(six categories) or Programming languages (12 languages)
+- Can be customized the typing test challenge with 1 minute, 2 minute, 3 minute, 5 minute,10 minute and 15 minute.
+- Can be customized the text for the typing test with English(12 categories) or Programming languages (12 languages)
 - Timer starts when first key is pressed and has option to pause/resume the typing test.
+- Maintains performance statistics and shows Histogram for typing speed.
+- Very much like GUI application despite the fact that the application is terminal based.
 
 
 ### Versions
 
-#### 1.1.4
-> Bug fix: install_requires keyword in setup.py(now windows-curses package will be autometically installed as required package for windows system)
-#### 1.1.3
-> No major changes, small adjustment in command-line arguments, and updated README file  
-#### 1.1.2
-> No changes (just fixed typo in my name in the setup file )
-#### 1.1.1
-> Added command line argument feature to upgrade (if latest version available) and for getting version information
-##### 1.1.0
-> Pause/resume the typing test feature has been added in this version.
-#### 1.0.1
-> Added help message to display when terminal is too small to fit onscreen keyboard
+#### 2.0.0
+> **Added features:** 
+>>1. Maintains performance statistics (All-time, Month, Week, Day) with total time (in minutes), top speed (wpm), and average speed (wpm) and also display the Histogram for typing speed.
+>>2. Added 9 language options (famous movie scripts) in the English language category while removing 3 languages options (Top 50 words, Top 100 Words, and Top 300 words).
+>>3. Shows new updates to upgrade (when available).
+#### 1.1.x
+> **Added features and bug fixes:** 
+>> 1. Bug fix: install_requires keyword in setup.py(now windows-curses package will be autometically installed as required package for windows system)
+>> 2. Added command line argument feature to upgrade (if latest version available) and for getting version information
+>> 3. Pause/resume the typing test feature has been added in this version.
 ##### 1.0.0
 > First version
 
@@ -43,12 +44,19 @@ usage: termtyper [-h] [--version] [--upgrade]
 The following languages are available
 
 #### English
->1. Top 50 words
->2. Top 100 words
->3. Top 200 words
->4. Top 300 words
->5. Too 500 words
->6. Top 1000 words
+>1. Top 200 words
+>2. Too 500 words
+>3. Top 1000 words
+>4. Toy Story(1-4)
+>5. Srek (1-4)
+>6. Happy Feet(1-2)
+>7. Kungfu Panda (1-3)
+>8. Frozen (1-2)
+>9. Moana
+>10. Harry Potter (1-3)
+>11. Lord of The Rings (1-3)
+>12. Titanic
+
 
 #### Programming 
 >1. C/CPP
@@ -71,3 +79,4 @@ The following practice challenges available
 >- 3 minute test
 >- 5 minute test
 >- 10 minute test
+>- 15 minute test
