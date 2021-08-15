@@ -6,7 +6,7 @@
 > `pip install termtyper`
 
 **Note:** 
-1. Please install latest python3 www.python.org (with pip), though python come with your system. There are some issues (like permission errors) with python that comes with system by default (as it is insatlled system level not user level). DO NOT UNININSTALL the python the came with your system by default. Just install one latest python at user level.
+1. Please install latest python3 from www.python.org (with pip), though python come with your system. There are some issues (like permission errors) with python that comes with system by default (as it is insatlled system level not user level). DO NOT UNININSTALL the python that came with your system by default. Just install one latest python at user level.
 2. On windows termtyper works with windows-terminal but one issue is, it crashes when we resize the terminal. So try not to resize the terminal after application got started (windows-terminal can be installed from microsoft store).
 
 
@@ -25,7 +25,8 @@ usage: termtyper [-h] [--version] [--upgrade]
 
 
 ### Versions
-
+#### 2.0.1
+> Fixed mistakes in the text of movie scripts in the English Language Category
 #### 2.0.0
 > **Added features:** 
 >>1. Maintains performance statistics (All-time, Month, Week, Day) with total time (in minutes), top speed (wpm), and average speed (wpm) and also display the Histogram for typing speed.

@@ -1183,7 +1183,7 @@ def keyboard(stdscr,kbd_y_offset,kbd_x_offset,key_map):
 
 # Main
 
-VERSION_NUMBER = '2.0.0'
+VERSION_NUMBER = '2.0.1'
 
 def latest_version(pkg_name='termtyper'):
     url = f"https://pypi.org/pypi/{pkg_name}/json"
