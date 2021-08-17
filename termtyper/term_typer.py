@@ -668,9 +668,11 @@ def termtyper(stdscr,language,stats):
             else:
                 a=space_locations[l][j-1]+1
             if textlist[l][a:b] != ip_text: 
+                word_got_wrong = True
                 for k in range(a,b):
                     color_dict[(l,k)]=curses.color_pair(RED)
                     abs_color_dict[cum_line_lengths[l-1]+k] = color_dict[(l,k)]
+
 
             ip_text = ""
             ip_text_ix = 0
