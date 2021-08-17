@@ -331,8 +331,6 @@ def print_result(stdscr,result,language,stats): # prints the performance result
     stdscr.clear()
     today = str(date.today())
     wpm_key = str(wpm)
-    # if wpm % 2 == 0:
-    #     wpm_key = str(wpm+1)
 
     if today not in stats:
         stats[today]={wpm_key:minutes}
@@ -1185,7 +1183,7 @@ def keyboard(stdscr,kbd_y_offset,kbd_x_offset,key_map):
 
 # Main
 
-VERSION_NUMBER = '2.0.1'
+VERSION_NUMBER = '2.0.2'
 
 def latest_version(pkg_name='termtyper'):
     url = f"https://pypi.org/pypi/{pkg_name}/json"
