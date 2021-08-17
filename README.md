@@ -25,6 +25,8 @@ usage: termtyper [-h] [--version] [--upgrade]
 
 
 ### Versions
+#### 2.0.2
+> Fixed Bug in correct word count and wrong word count calculation
 #### 2.0.1
 > Fixed mistakes in the text of movie scripts in the English Language Category
 #### 2.0.0
