@@ -204,6 +204,8 @@ def hist_data(stats,start_day,num_days):
     max_speed = 0
     for d in range(num_days):
         day=str(date.fromisoformat(start_day)+timedelta(days=-d))
+        if not day in stats:
+            continue
         for k in stats[day]:
             if int(k) > max_speed:
                 max_speed = int(k)
@@ -1183,7 +1185,7 @@ def keyboard(stdscr,kbd_y_offset,kbd_x_offset,key_map):
 
 # Main
 
-VERSION_NUMBER = '2.0.2'
+VERSION_NUMBER = '2.0.3'
 
 def latest_version(pkg_name='termtyper'):
     url = f"https://pypi.org/pypi/{pkg_name}/json"

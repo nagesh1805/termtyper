@@ -23,8 +23,11 @@ usage: termtyper [-h] [--version] [--upgrade]
 - Maintains performance statistics and shows Histogram for typing speed.
 - Very much like GUI application despite the fact that the application is terminal based.
 
+[![termtyper](https://img.youtube.com/vi/nPjmML7n2ag/0.jpg)](https://www.youtube.com/watch?v=nPjmML7n2ag)
 
 ### Versions
+#### 2.0.3
+> Fixed Bug in staticstics(date key Error)
 #### 2.0.2
 > Fixed Bug in correct word count and wrong word count calculation
 #### 2.0.1
