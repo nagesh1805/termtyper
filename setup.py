@@ -22,5 +22,5 @@ setup(
             "termtyper=termtyper.term_typer:run",
         ]
     },
-    python_requires=">=3.6",
+    python_requires=">=3.7",
 )

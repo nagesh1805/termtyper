@@ -6,8 +6,10 @@
 > `pip install termtyper`
 
 **Note:** 
-1. Please install latest python3 from www.python.org (with pip), though python come with your system. There are some issues (like permission errors) with python that comes with system by default (as it is insatlled system level not user level). DO NOT UNININSTALL the python that came with your system by default. Just install one latest python at user level.
+1. Please install latest python3(version >= 3.7) from www.python.org (with pip), though python come with your system. There are some issues (like permission errors) with python that comes with system by default (as it is insatlled system level not user level). DO NOT UNININSTALL the python that came with your system by default. Just install one latest python at user level.
 2. On windows termtyper works with windows-terminal but one issue is, it crashes when we resize the terminal. So try not to resize the terminal after application got started (windows-terminal can be installed from microsoft store).
+3. If you are mac user and get the SSL: CERTIFICATE_VERIFY_FAILED error, then goto applications folder, and find the python folder and double click the file Install Certificates.command. then you are good to go.
+
 
 
 ### Usage of command
@@ -26,6 +28,8 @@ usage: termtyper [-h] [--version] [--upgrade]
 [![termtyper](https://img.youtube.com/vi/nPjmML7n2ag/0.jpg)](https://www.youtube.com/watch?v=nPjmML7n2ag)
 
 ### Versions
+#### 2.0.4
+> Updated setup.py (chnaged minimum python version requirement from 3.6  to 3.7)
 #### 2.0.3
 > Fixed Bug in staticstics(date key Error)
 #### 2.0.2
