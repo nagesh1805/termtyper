@@ -453,7 +453,7 @@ def termtyper(stdscr,language,stats):
 
     print_text(stdscr,textlist,color_dict,l=0)
     print_input_text(stdscr, ip_text,time_left)
-    mssg = "Paused. Press F4 to resume to typing"
+    mssg = "Paused! Press F4 to resume back to typing."
     if on_screen_kbd and can_dispay_keyboard(stdscr):
         keyboard(stdscr,KEYBOARD_Y_OFFSET,(sw-KEYBOARD_WIDTH)//2,key_map)
 
@@ -563,14 +563,16 @@ def termtyper(stdscr,language,stats):
         if pkey != None and  started and on_screen_kbd and can_dispay_keyboard(stdscr):
             typed_effect(stdscr,key_map,pkey)
 
+
+
         if pause_typing:
             stdscr.addstr(PAUSED_MSG_Y_OFFSET,sw//2-len(mssg)//2,mssg,curses.color_pair(DEFAULT))
-            stdscr.chgat(PAUSED_MSG_Y_OFFSET,sw//2-len(mssg)//2+ mssg.index('Paused'),len('Paused.'),curses.color_pair(RED)|curses.A_BOLD)
+            stdscr.chgat(PAUSED_MSG_Y_OFFSET,sw//2-len(mssg)//2+ mssg.index('Paused'),len('Paused!'),curses.color_pair(RED)|curses.A_BOLD)
             stdscr.chgat(PAUSED_MSG_Y_OFFSET,sw//2-len(mssg)//2+ mssg.index('F4'),len('F4'),curses.color_pair(BLUE)|curses.A_BOLD)
         else:
-            stdscr.addstr(PAUSED_MSG_Y_OFFSET,sw//2-len(mssg)//2,len(mssg)*" ") 
+            stdscr.move(PAUSED_MSG_Y_OFFSET,sw//2-len(mssg)//2)
+            stdscr.clrtoeol()
         stdscr.refresh()
-
 
         if key == curses.KEY_RESIZE or refresh or key == curses.KEY_F3:
             if (sh,sw) != stdscr.getmaxyx():
@@ -776,13 +778,14 @@ def termtyper(stdscr,language,stats):
 
         elif key == curses.KEY_F4:
 
-            mssg = "Paused. Press F4 to resume to typing"
+            # mssg = "Paused. Press F4 to resume to typing"
             if not pause_typing:
                 stdscr.addstr(PAUSED_MSG_Y_OFFSET,sw//2-len(mssg)//2,mssg,curses.color_pair(DEFAULT))
-                stdscr.chgat(PAUSED_MSG_Y_OFFSET,sw//2-len(mssg)//2+ mssg.index('Paused'),len('Paused.'),curses.color_pair(RED)|curses.A_BOLD)
+                stdscr.chgat(PAUSED_MSG_Y_OFFSET,sw//2-len(mssg)//2+ mssg.index('Paused'),len('Paused!'),curses.color_pair(RED)|curses.A_BOLD)
                 stdscr.chgat(PAUSED_MSG_Y_OFFSET,sw//2-len(mssg)//2+ mssg.index('F4'),len('F4'),curses.color_pair(BLUE)|curses.A_BOLD)
             else:
-                stdscr.addstr(PAUSED_MSG_Y_OFFSET,sw//2-len(mssg)//2,len(mssg)*" ") 
+                stdscr.move(PAUSED_MSG_Y_OFFSET,sw//2-len(mssg)//2)
+                stdscr.clrtoeol()
 
             pause_typing = not pause_typing
 
@@ -803,7 +806,7 @@ def termtyper(stdscr,language,stats):
                 ip_text_ix += 1
                 i += 1
         elif key in [curses.KEY_UP,curses.KEY_DOWN,curses.KEY_HOME,curses.KEY_PPAGE,
-                curses.KEY_NPAGE,curses.KEY_END,10,13,curses.KEY_ENTER,curses.KEY_DC,curses.KEY_IC,curses.ascii.TAB]:
+                curses.KEY_NPAGE,curses.KEY_END,10,13,curses.KEY_ENTER,curses.ascii.TAB]:
                 if on_screen_kbd and can_dispay_keyboard(stdscr):
                     typed_effect(stdscr,key_map,key,YELLOW)
 
@@ -842,8 +845,8 @@ def termtyper(stdscr,language,stats):
         elif started and pause_typing:
             now = time.time()
 
-        if  key in list(range(ord(' '),ord('~')+1))+[curses.KEY_BACKSPACE,curses.ascii.DEL,curses.ascii.BS,curses.KEY_LEFT,curses.KEY_RIGHT,curses.KEY_UP,curses.KEY_DOWN,curses.KEY_HOME,curses.KEY_PPAGE,
-                curses.KEY_NPAGE,curses.KEY_END,10,13,curses.KEY_ENTER,curses.KEY_DC,curses.KEY_IC,curses.ascii.TAB]:
+        if  key in list(range(ord(' '),ord('~')+1))+[curses.KEY_BACKSPACE,curses.ascii.BS,curses.ascii.DEL, curses.KEY_LEFT,curses.KEY_RIGHT,curses.KEY_UP,curses.KEY_DOWN,curses.KEY_HOME,curses.KEY_PPAGE,
+                curses.KEY_NPAGE,curses.KEY_END,10,13,curses.KEY_ENTER,curses.ascii.TAB]:
             if not pause_typing:
                 pkey = key
             else:
@@ -1185,13 +1188,24 @@ def keyboard(stdscr,kbd_y_offset,kbd_x_offset,key_map):
 
 # Main
 
-VERSION_NUMBER = '2.0.4'
+VERSION_NUMBER = '2.0.5'
 
 def latest_version(pkg_name='termtyper'):
-    url = f"https://pypi.org/pypi/{pkg_name}/json"
-    data = json.load(urllib.request.urlopen(url))
-    versions = sorted(list(data["releases"].keys()))
-    return versions[-1]
+    try:
+        url = f"https://pypi.org/pypi/{pkg_name}/json"
+        data = json.load(urllib.request.urlopen(url))
+        versions = sorted(list(data["releases"].keys()))
+        return versions[-1]
+    except Exception as e:
+        print()
+        print("Attempted to check for latest updates. But could not get the latest vesion information.")
+        print("Due to the following Error:")
+        print(e)
+        print(10*"-")
+        print("Please wait. termtyper will open in 5 seconds...")
+        time.sleep(5)
+        return VERSION_NUMBER
+
 
 def termtyper_main(stdscr):
     curses.curs_set(False)

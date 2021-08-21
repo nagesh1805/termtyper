@@ -8,7 +8,7 @@
 **Note:** 
 1. Please install latest python3(version >= 3.7) from www.python.org (with pip), though python come with your system. There are some issues (like permission errors) with python that comes with system by default (as it is insatlled system level not user level). DO NOT UNININSTALL the python that came with your system by default. Just install one latest python at user level.
 2. On windows termtyper works with windows-terminal but one issue is, it crashes when we resize the terminal. So try not to resize the terminal after application got started (windows-terminal can be installed from microsoft store).
-3. If you are mac user and get the SSL: CERTIFICATE_VERIFY_FAILED error, then goto applications folder, and find the python folder and double click the file Install Certificates.command. then you are good to go.
+3. If you are mac user and get the SSL: CERTIFICATE_VERIFY_FAILED error for the first time you open application, then goto applications folder, and find the python folder and double click the file Install Certificates.command. then you are good to go.
 
 
 
@@ -20,7 +20,7 @@ usage: termtyper [-h] [--version] [--upgrade]
 ### Features
 - Onscreen keyboard to see typing effect and has option to toggle onscreen keyboard.
 - Can be customized the typing test challenge with 1 minute, 2 minute, 3 minute, 5 minute,10 minute and 15 minute.
-- Can be customized the text for the typing test with English(12 categories) or Programming languages (12 languages)
+- Can be customized the text for the typing test with English(12 options) or Programming languages (12 languages)
 - Timer starts when first key is pressed and has option to pause/resume the typing test.
 - Maintains performance statistics and shows Histogram for typing speed.
 - Very much like GUI application despite the fact that the application is terminal based.
@@ -28,6 +28,8 @@ usage: termtyper [-h] [--version] [--upgrade]
 [![termtyper](https://img.youtube.com/vi/nPjmML7n2ag/0.jpg)](https://www.youtube.com/watch?v=nPjmML7n2ag)
 
 ### Versions
+#### 2.0.5
+> Fixed Bug! (crashing termtytper when we press some unwanted keys(like Insert, DELETE))
 #### 2.0.4
 > Updated setup.py (chnaged minimum python version requirement from 3.6  to 3.7)
 #### 2.0.3
